@@ -7,12 +7,15 @@ import { ExploreContainerComponentModule } from '../explore-container/explore-co
 
 import { Tab1PageRoutingModule } from './tab1-routing.module';
 
+import { AgmCoreModule } from '@agm/core';
+
 @NgModule({
   imports: [
     IonicModule,
     CommonModule,
     FormsModule,
     ExploreContainerComponentModule,
+    AgmCoreModule,
     Tab1PageRoutingModule
   ],
   declarations: [Tab1Page]

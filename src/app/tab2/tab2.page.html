@@ -6,6 +6,39 @@
   </ion-toolbar>
 </ion-header>
 
+
+<!-- <ion-content>
+  <div class="ion-padding">
+      <ion-input type="text" placeholder="My QR data" [(ngModel)]="qrData">
+      </ion-input>
+
+
+      <button ion-button full icon-left (click)="createCode()">
+          <ion-icon name="barcode"></ion-icon>Create
+      </button>
+
+
+      <ion-card *ngIf="createdCode">
+          <ngx-qrcode [value]="createdCode">
+          </ngx-qrcode>
+
+          <ion-card-content>
+              Value: {{ createdCode }}
+          </ion-card-content>
+      </ion-card>
+
+  </div>
+</ion-content> -->
+
+
+<!-- <ion-content>
+  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+    <ion-fab-button (click)="photoService.addNewToGallery()">
+      <ion-icon name="camera"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
+
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
@@ -13,5 +46,37 @@
     </ion-toolbar>
   </ion-header>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
-</ion-content>
+  <ion-content>
+    <ion-button (click)="takeQr()">
+  SScan
+    </ion-button>
+
+    <ion-button (click)="stopQr()">
+      StopScan
+        </ion-button>
+
+
+        <ion-button (click)="check()">
+          Check
+            </ion-button>
+  </ion-content>
+    
+
+</ion-content> -->
+    
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed"  >
+  <ion-fab-button (click)="check()" mode="ios" fill="clear">
+    <ion-icon class="customIcon" name="add-circle-outline" mode="ios" style="font-size: 2em;"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+
+
+<ion-fab vertical="bottom" horizontal="start" slot="fixed"  >
+  <ion-fab-button (click)="takeQr()" mode="ios" fill="clear">
+    <ion-icon class="customIcon" name="play-circle-outline" mode="ios" style="font-size: 2em;"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+  <!-- <app-explore-container name="Tab 2 page"></app-explore-container>
+</ion-content> -->
+

@@ -1,0 +1,210 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>event</ion-title>
+
+    <ion-buttons slot="primary"  *ngIf="showSave" >
+      <ion-button color="danger" fill="outline" (click)="saveSelect()">
+        Save
+        <ion-icon slot="end" name="create"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+</ion-header>
+<!-- 
+ <ion-content>
+
+  <ion-button expand="block" (click)="sendShare()">
+    Share QR
+  </ion-button>
+
+  <ion-button expand="block" (click)="getEvent()">
+    Get Event
+  </ion-button>
+
+
+    <ion-card>
+      <ion-icon name="pin" slot="end" color="primary"></ion-icon>
+      <h2 #messageSubject>Ionic Developer</h2>
+      <p>May 5, 2019</p>
+   
+  
+      <ion-card-content>
+        <p #messageBody>Wow Ionic 4 is so awesom. I gotta share this to other people.</p>
+        
+        <ngx-qrcode qrc-class=“qr” id="qrCodeImage" [elementType]="elementType"  [value]="staticCode">
+        </ngx-qrcode>
+  
+        <a [href]="href" (click)="downloadStaticImage()" download>Download Image</a>
+
+
+        <ion-grid>
+          <ion-row>
+            <ion-col size="6">
+              <ion-button color="primary" (click)="downloadShareVia()">
+                <ion-icon slot="end" name="thumbs-up"></ion-icon>
+                <div>12 Likes</div>
+              </ion-button>
+            </ion-col>
+            <ion-col size="3">
+              <ion-button (click)="sendStaticShare([href], 
+                messageSubject.innerText, 'https://ionicframework.com/docs')">
+                <ion-icon slot="icon-only" name="share"></ion-icon>
+              </ion-button>
+            </ion-col>
+            <ion-col size="3">
+              <ion-note>
+                11h ago
+              </ion-note>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+    </ion-card>
+</ion-content>  -->
+
+    <!-- <ion-content>
+    
+      <ion-grid>
+        <ion-row>
+          <ion-col *ngFor="let e of row_event" size-xs="12" size-sm="6" size-md="4" size-lg="3" size-xl="2">
+            <ion-card (click)="goEvent(e)">
+              <ion-card-header>
+                <ion-card-subtitle>
+
+                  {{e.Description}} {{e.pid}}
+    
+                </ion-card-subtitle>
+                <ion-card-title>
+                  {{e.Name}} {{e.Address}} {{e.Lat}} {{e.Lng}} {{e.Date}} {{e.Time}}
+  
+                </ion-card-title>
+              </ion-card-header>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    
+    </ion-content> -->
+
+    
+    <ion-content>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        Row ID
+      </ion-col>
+      <ion-col>
+        Name
+      </ion-col>
+      <ion-col>
+        Action
+      </ion-col>
+      <ion-col>
+        Delete
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let item of row_data"  >  
+       <!-- (click)="setAttended(item)" -->
+      <ion-col>
+        {{item.pid}}
+      </ion-col>
+      <ion-col>
+        {{item.Name}}
+      </ion-col>
+      <ion-col>
+        <ion-button (click)="deleteRow(item)" size="small" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+        <ion-button (click)="createQr(item)" size="small" color="warning">
+          <ion-icon name="create"></ion-icon>
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        {{item.Attend}} {{item.Attend === 1 ? 'True' : 'False'}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+
+  <ion-input type="text" placeholder="My QR data" [(ngModel)]="qrData">
+  </ion-input>
+
+
+  <button ion-button full icon-left (click)="createCode()">
+      <ion-icon name="barcode"></ion-icon>Create
+  </button>
+
+
+  <ion-card *ngIf="createdCode">
+      <ngx-qrcode qrc-class=“qr” id="qrCodeImage" [elementType]="elementType"  [value]="createdCode">
+      </ngx-qrcode>
+
+      <a [href]="href" (click)="downloadImage()" download>Download Image</a>
+
+      <ion-card-content>
+          Value: {{ createdCode }}
+
+          <ion-button (click)="sendShare([value], 
+          'subject', 'https://ionicframework.com/docs')">
+          <ion-icon slot="icon-only" name="share"></ion-icon>
+        </ion-button>
+
+        <!-- <ion-button (click)="sendShareNext([value], 
+        'subject', 'https://ionicframework.com/docs')">
+        <ion-icon slot="icon-only" name="share"></ion-icon>
+      </ion-button> -->
+
+        <ion-button color="primary" (click)="downloadIonicImage()">
+          <ion-icon slot="end" name="download"></ion-icon>
+        </ion-button>
+        
+        <ion-button color="primary" (click)="sendWhatsapp()">
+          <ion-icon name="logo-whatsapp"></ion-icon>
+        </ion-button>
+
+
+        <ion-icon name="logo-whatsapp"></ion-icon>
+
+      </ion-card-content>
+  </ion-card>
+
+
+</ion-content>
+
+
+<ion-content *ngIf="showSave" >
+
+  <ion-grid>
+    <ion-row>
+      <ion-col  *ngFor="let e of selectedContacts" size-xs="12" size-sm="6" size-md="4" size-lg="3" size-xl="2">
+        <ion-card color="e.select == 1 ? 'primary' : 'secondary'">
+          <ion-card-header>
+            <ion-card-subtitle>
+              <!-- {{e.event.created | date:'short'}} -->
+              {{e.contact.name.givenName}} {{e.contact.name.familyName}}
+
+            </ion-card-subtitle>
+            <ion-card-title>
+               {{e.contact.phoneNumbers[0].value}}
+
+               <ion-item>
+                 Check to invite
+               <ion-checkbox  slot="end" color="secondary" [(ngModel)]="e.select" ></ion-checkbox>
+              </ion-item>
+            </ion-card-title>
+          </ion-card-header>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed"  *ngIf="!showEvent" >
+  <ion-fab-button (click)="loadContacts()" mode="ios" fill="clear">
+    <ion-icon class="customIcon" name="add-circle-outline" mode="ios" style="font-size: 2em;"></ion-icon>
+  </ion-fab-button>
+</ion-fab>

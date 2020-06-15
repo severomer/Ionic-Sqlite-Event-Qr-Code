@@ -1,17 +1,327 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 1
+      DataBase
     </ion-title>
+
+
+  <ion-buttons slot="primary"  *ngIf="showSave" >
+    <ion-button color="danger" fill="outline" (click)="saveSelect()">
+      Save
+      <ion-icon slot="end" name="create"></ion-icon>
+    </ion-button>
+  </ion-buttons>
+
+
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content *ngIf="!showEvent">
+  <ion-grid>
+    <ion-row>
+      <ion-col  *ngFor="let e of row_event" size-xs="12" size-sm="6" size-md="4" size-lg="3" size-xl="2">
+        <ion-card >
+          <ion-card-header (click)="goEvent(e)">
+            <ion-card-subtitle>
+              <!-- {{e.event.created | date:'short'}} -->
+              {{e.Description}} {{e.pid}} 
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+            </ion-card-subtitle>
+            <ion-card-title>
+               {{e.Name}} <br> {{e.Address}} <br> {{e.Lat}} <br> {{e.Lng}} <br> {{e.Date}} <br> {{e.Time}} <br> {{e.Desc}} 
+<!-- 
+               <ion-item>
+                 Check to invite
+               <ion-checkbox  slot="end" color="secondary" [(ngModel)]="e.select" ></ion-checkbox>
+              </ion-item> -->
+            </ion-card-title>
+          </ion-card-header>
+
+          <ion-button color="primary" (click)="deleteEventRow(e)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </ion-button>
+          
+          <ion-button color="primary" (click)="updateEvent(e)">
+            <ion-icon name="refresh-circle-outline"></ion-icon>
+          </ion-button>
+
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+
+
+
+
+<ion-content  color="tertiary" *ngIf="showEvent">
+  <form  #form="ngForm" (ngSubmit)="event(form)">
+    <ion-grid>
+      <ion-row color="tertiary" justify-content-center>
+        <ion-col align-self-center size-md="6" size-lg="5" size-xs="12">
+          <div text-center>
+            <h3>New Event!</h3>
+          </div>
+          <div padding>
+            <ion-item color="dark">
+              <ion-input  name="event_name" type="text" placeholder="Your Event Name" ngModel required></ion-input>
+            </ion-item >
+            <ion-item  color="dark">
+              <ion-input  name="event_date" type="date" placeholder="Your Event Date" ngModel ></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-input  name="event_time" type="time" placeholder="Your Event Time" ngModel ></ion-input>
+            </ion-item>
+            <!-- <ion-item>
+              <ion-input  name="ozel" type="checkbox" placeholder="Your" ngModel ></ion-input>
+            </ion-item> -->
+            <ion-item color="secondary">
+              <ion-input  name="event_desc" type="text" placeholder="Your Event Description" ngModel></ion-input>
+            </ion-item >
+            <ion-item>
+              Is Your Event Private
+            <ion-checkbox name="ozel" slot="end"  placeholder="Is Your Event Private" ngModel ></ion-checkbox>
+            </ion-item>
+
+
+
+            <agm-map [usePanning]="true" [latitude]="lat" [longitude]="lng" [zoom]="12" [disableDefaultUI]="false">
+              <agm-marker [latitude]="lat" [longitude]="lng" [markerDraggable]=true></agm-marker>
+            </agm-map>
+            <ion-grid class="status-grid">
+              <ion-row>
+                <ion-col *ngIf="showingCurrent">
+                  Showing Current Location
+                </ion-col>
+                <ion-col *ngIf="!showingCurrent">
+                  Showing Geocoded Location
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+            <ion-button color="success" (click)="setCurrentPosition()" expand="full" class="ion-margin">Show My Location
+            </ion-button>
+          
+            <ion-item>
+              <ion-label position="stacked">Enter Address to Geocode</ion-label>
+              <ion-input type="text"  name="event_address" [(ngModel)]="address" ngModel></ion-input>
+            </ion-item>
+            <ion-row class="ion-padding-horizontal ion-padding-top" *ngIf="!showingCurrent">
+              <ion-text class="coords" name="event_lat" [(ngModel)]="lat" ngModel>{{lat}}</ion-text>
+            </ion-row>
+            <ion-row class="ion-padding-horizontal" *ngIf="!showingCurrent">
+              <ion-text class="coords" name="event_lng" [(ngModel)]="lng" ngModel>{{lng}}</ion-text>
+            </ion-row>
+            <ion-button color="success" (click)="geocode()" expand="full" class="ion-margin">
+              Geocode Address</ion-button>
+          
+
+          </div>
+         
+          <div padding>
+            <ion-button size="large" expand="block" (click)="cancelEvent()"> Cancel </ion-button>
+            <ion-button  size="large" type="submit" [disabled]="form.invalid" expand="block">Save</ion-button>
+          </div>
+        </ion-col>
+      </ion-row>
+    </ion-grid>
+  </form>
+</ion-content>
+
+
+
+
+<ion-content padding text-center *ngIf="!showEvent">
+
+  <ion-button expand="block" (click)="createDB()">
+    Create DataBase
+  </ion-button>
+
+  <ion-button expand="block" (click)="createTable()">
+    Create Table
+  </ion-button>
+
+  <ion-button expand="block" (click)="getRows()">
+    Get Rows
+  </ion-button>
+
+  <ion-button expand="block" (click)="getEventRows()">
+    Event Rows
+  </ion-button>
+
+  <!-- <ion-button expand="block" (click)="alterTable()">
+    Alter Table
+  </ion-button> -->
+
+  <ion-item-divider>
+    <ion-input placeholder="Enter Name" [(ngModel)]="name_model"></ion-input>
+    <ng-container *ngIf="updateActive; else elseTemplateUpdate">
+      <ion-button expand="block" (click)="updateRow()">
+        Update Row
+      </ion-button>
+    </ng-container>
+    <ng-template #elseTemplateUpdate>
+      <ion-button expand="block" (click)="insertRow()">
+        Insert Row
+      </ion-button>
+    </ng-template>
+
+
+  </ion-item-divider>
+
+
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        Row ID
+      </ion-col>
+      <ion-col>
+        Name
+      </ion-col>
+      <ion-col>
+        Action
+      </ion-col>
+      <ion-col>
+        Delete
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let item of row_data" (click)="setAttended(item)" >
+      <ion-col>
+        {{item.pid}}
+      </ion-col>
+      <ion-col>
+        {{item.Name}}
+      </ion-col>
+      <ion-col>
+        <ion-button (click)="deleteRow(item)" size="small" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+        <ion-button (click)="enableUpdate(item)" size="small" color="warning">
+          <ion-icon name="create"></ion-icon>
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        {{item.Attend}} {{item.Attend === 1 ? 'True' : 'False'}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        Event ID
+      </ion-col>
+      <ion-col>
+        Name
+      </ion-col>
+      <ion-col>
+        Action
+      </ion-col>
+      <ion-col>
+        Desc
+      </ion-col>
+    </ion-row>
+    <ion-row *ngFor="let item of row_event" >
+      <ion-col>
+        {{item.pid}}
+      </ion-col>
+      <ion-col>
+        {{item.Name}}
+      </ion-col>
+      <ion-col>
+        <ion-button (click)="deleteEventRow(item)" size="small" color="danger">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+        <ion-button (click)="enableUpdate(item)" size="small" color="warning">
+          <ion-icon name="create"></ion-icon>
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        {{item.Description}}
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+
+</ion-content>
+
+
+
+<ion-content *ngIf="showSave" >
+
+      <ion-list>
+        <ion-item-sliding *ngFor="let e of selectedContacts">
+
+          <ion-item *ngIf="e.select">
+          <ion-label>
+            {{e.contact.name.givenName}} <b>{{e.contact.name.familyName}}</b>
+            <p>{{e.contact.phoneNumbers[0].value}}</p>
+          </ion-label>
+          <ion-checkbox  slot="end" (click)="sendSMS(e)" ></ion-checkbox>
+          </ion-item>
+
+          <ion-item-options side="end">
+            <ion-item-option (click)="sendSMS(e)" color="secondary">
+              <ion-icon name="mail" slot="icon-only"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+
+        </ion-item-sliding>
+      </ion-list>
+
+
+      <ion-grid>
+        <ion-row>
+          <ion-col  *ngFor="let e of selectedContacts" size-xs="12" size-sm="6" size-md="4" size-lg="3" size-xl="2">
+            <ion-card color="e.select == 1 ? 'primary' : 'secondary'">
+              <ion-card-header>
+                <ion-card-subtitle>
+                  <!-- {{e.event.created | date:'short'}} -->
+                  {{e.contact.name.givenName}} {{e.contact.name.familyName}}
+
+                </ion-card-subtitle>
+                <ion-card-title>
+                   {{e.contact.phoneNumbers[0].value}}
+
+                   <ion-item>
+                     Check to invite
+                   <ion-checkbox  slot="end" color="secondary" [(ngModel)]="e.select" ></ion-checkbox>
+                  </ion-item>
+                </ion-card-title>
+              </ion-card-header>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+
+</ion-content>
+
+<ion-fab vertical="bottom" horizontal="end" slot="fixed"  *ngIf="!showEvent" >
+  <ion-fab-button (click)="changeEvent()" mode="ios" fill="clear">
+    <ion-icon class="customIcon" name="add-circle-outline" mode="ios" style="font-size: 2em;"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+
+
+<!-- 
+<ion-footer class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Footer - No Border</ion-title>
+    <ion-button (click)="loadContacts()" size="small" shape ="round" color="warning" slot="end">
+      <ion-icon name="add-circle-outline"></ion-icon>
+        </ion-button>
+  </ion-toolbar>
+</ion-footer>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-title>Footer</ion-title>
+
+    <ion-button (click)="loadContacts()" size="small" shape ="round" color="warning" slot="end">
+      <ion-icon name="add-circle-outline"></ion-icon>
+        </ion-button>
+
+
+  </ion-toolbar>
+</ion-footer> -->
